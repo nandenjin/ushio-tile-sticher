@@ -36,9 +36,7 @@ function App() {
   )
   const [zoomLevel, setZoomLevelChange] = useState(15)
   const [currentZoomLevel, setCurrentZoomLevel] = useState(zoomLevel)
-  const [currentBounds, setCurrentBounds] = useState<LatLngBounds>(
-    new LatLngBounds([0, 0], [0, 0])
-  )
+  const [currentBounds, setCurrentBounds] = useState<LatLngBounds>()
   const [tileLength, setTileLength] = useState(0)
   const [processedTileLength, setProcessedTileLength] = useState(0)
   const [wTiles, setWTiles] = useState(0)
@@ -129,6 +127,8 @@ function App() {
   }
 
   const generateWithConfirm = async (confirmed?: boolean) => {
+    if (!currentBounds) return
+
     if (!confirmed) {
       const { tileList, w } = getTilesByLatLngAndZoom(currentBounds, zoomLevel)
 
@@ -166,7 +166,7 @@ function App() {
         currentZoomLevel={currentZoomLevel}
         onTileUrlTemplateChange={setTileUrlTemplate}
         onZoomLevelChange={setZoomLevelChange}
-        generateDisabled={currentZoomLevel > zoomLevel}
+        generateDisabled={currentZoomLevel > zoomLevel || !currentBounds}
         onSubmit={() => generateWithConfirm()}
       />
       <MapContainer
@@ -275,9 +275,9 @@ function App() {
 export default App
 
 type MapSensorProps = {
-  onZoomLevelChange?: (zoomLevel: number) => unknown
-  onMoveEnd?: (latlng: LatLng) => unknown
-  onBoundsChange?: (bound: LatLngBounds) => unknown
+  onZoomLevelChange?: (zoomLevel: number, map: Map) => unknown
+  onMoveEnd?: (latlng: LatLng, map: Map) => unknown
+  onBoundsChange?: (bound: LatLngBounds, map: Map) => unknown
 }
 
 const MapSensor: React.FC<MapSensorProps> = ({
@@ -288,13 +288,13 @@ const MapSensor: React.FC<MapSensorProps> = ({
   useMapEvents({
     zoomend: (e) => {
       const map: Map = e.target
-      onZoomLevelChange?.(map.getZoom())
-      onBoundsChange?.(map.getBounds())
+      onZoomLevelChange?.(map.getZoom(), map)
+      onBoundsChange?.(map.getBounds(), map)
     },
     moveend: (e) => {
       const map: Map = e.target
-      onMoveEnd?.(e.target.getCenter())
-      onBoundsChange?.(map.getBounds())
+      onMoveEnd?.(e.target.getCenter(), map)
+      onBoundsChange?.(map.getBounds(), map)
     },
   })
   return <></>
