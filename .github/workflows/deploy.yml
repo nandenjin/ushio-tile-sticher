@@ -34,7 +34,10 @@ jobs:
           node-version: lts/*
           cache: yarn
       - run: yarn install --frozen-lockfile
-      - run: yarn build
+
+      # Build with base path for GitHub Pages
+      - run: yarn build --base=/ushio-tile-stitcher
+
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Upload artifact
