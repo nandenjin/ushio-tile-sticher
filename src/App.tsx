@@ -203,8 +203,9 @@ function App() {
             rel="noopener"
             target="_blank"
           >
-            GSIMap Tiles (地理院タイル)
-          </a>
+            GSIMap Tiles (地理院タイル):
+          </a>{' '}
+          Geospatial Information Authority of Japan
         </li>
         <li>
           <a
@@ -212,11 +213,26 @@ function App() {
             rel="noopener"
             target="_blank"
           >
-            OpenMapTiles (under BSD/CC-BY): MapTiler.com &amp; OpenMapTiles
-            contributors
-          </a>
+            OpenMapTiles (under BSD/CC-BY):
+          </a>{' '}
+          MapTiler.com &amp; OpenMapTiles contributors
         </li>
       </ul>
+
+      <p>
+        ushio-tile-sticher is a utility for{' '}
+        <a
+          href="https://www.nandenjin.com/works/ushio-kameyama"
+          target="_blank"
+          rel="noopener"
+        >
+          art projects
+        </a>{' '}
+        by Kazumi Inada.{' '}
+        <a href="https://github.com/nandenjin/ushio-tile-stitcher">
+          Contributes are welcome on GitHub.
+        </a>
+      </p>
 
       <AlertDialog
         isOpen={isWarningOpen}
