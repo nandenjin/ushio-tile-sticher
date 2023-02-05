@@ -1,8 +1,9 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   LayersControl,
   MapContainer,
   TileLayer,
+  useMap,
   useMapEvents,
 } from 'react-leaflet'
 import { ControlUi } from './components/ControlUI'
@@ -164,8 +165,10 @@ function App() {
         tileUrlTemplate={tileUrlTemplate}
         zoomLevel={zoomLevel}
         currentZoomLevel={currentZoomLevel}
+        bounds={currentBounds}
         onTileUrlTemplateChange={setTileUrlTemplate}
         onZoomLevelChange={setZoomLevelChange}
+        onBoundsChange={setCurrentBounds}
         generateDisabled={currentZoomLevel > zoomLevel || !currentBounds}
         onSubmit={() => generateWithConfirm()}
       />
@@ -192,6 +195,7 @@ function App() {
         <MapSensor
           onZoomLevelChange={setCurrentZoomLevel}
           onBoundsChange={setCurrentBounds}
+          bounds={currentBounds}
         />
       </MapContainer>
 
@@ -294,13 +298,19 @@ type MapSensorProps = {
   onZoomLevelChange?: (zoomLevel: number, map: Map) => unknown
   onMoveEnd?: (latlng: LatLng, map: Map) => unknown
   onBoundsChange?: (bound: LatLngBounds, map: Map) => unknown
+  bounds?: LatLngBounds
 }
 
 const MapSensor: React.FC<MapSensorProps> = ({
   onZoomLevelChange,
   onMoveEnd,
   onBoundsChange,
+  bounds,
 }) => {
+  const map = useMap()
+  useEffect(() => {
+    map.setView(bounds?.getCenter() ?? map.getCenter(), map.getZoom())
+  })
   useMapEvents({
     zoomend: (e) => {
       const map: Map = e.target

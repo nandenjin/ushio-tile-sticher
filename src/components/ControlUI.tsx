@@ -11,6 +11,7 @@ import {
   NumberInputStepper,
   Select,
 } from '@chakra-ui/react'
+import { bounds, LatLngBounds } from 'leaflet'
 import React from 'react'
 
 const MapType = {
@@ -37,7 +38,9 @@ type Props = {
   zoomLevel: number
   currentZoomLevel?: number
   generateDisabled?: boolean
+  bounds?: L.LatLngBounds
   onTileUrlTemplateChange: (tileUrlTemplate: string) => unknown
+  onBoundsChange: (bounds: L.LatLngBounds) => unknown
   onZoomLevelChange: (zoomLevel: number) => unknown
   onSubmit: () => unknown
 }
@@ -47,7 +50,9 @@ export const ControlUi: React.FC<Props> = ({
   zoomLevel,
   currentZoomLevel,
   generateDisabled,
+  bounds,
   onTileUrlTemplateChange,
+  onBoundsChange,
   onZoomLevelChange,
   onSubmit,
 }) => (
@@ -99,6 +104,25 @@ export const ControlUi: React.FC<Props> = ({
         ''
       )}
     </InputGroup>
+    <Input
+      value={
+        bounds?.getNorthWest().lat +
+        ',' +
+        bounds?.getNorthWest().lng +
+        ',' +
+        bounds?.getSouthEast().lat +
+        ',' +
+        bounds?.getSouthEast().lng
+      }
+      onChange={(e) => {
+        const v = e.target.value
+        if (v.match(/(-?\d+\.\d+),(-?\d+\.\d+),(-?\d+\.\d+),(-?\d+\.\d+)/)) {
+          const [lat1, lng1, lat2, lng2] = v.split(',').map((v) => +v)
+          const bounds = new LatLngBounds([lat1, lng1], [lat2, lng2])
+          onBoundsChange(bounds)
+        }
+      }}
+    ></Input>
     <Button onClick={onSubmit} disabled={generateDisabled}>
       Generate
     </Button>
