@@ -11,7 +11,7 @@ import {
   NumberInputStepper,
   Select,
 } from '@chakra-ui/react'
-import { bounds, LatLngBounds } from 'leaflet'
+import { LatLngBounds } from 'leaflet'
 import React from 'react'
 
 const MapType = {
